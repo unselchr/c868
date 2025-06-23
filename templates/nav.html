@@ -1,0 +1,19 @@
+{% load static%}
+<nav class='navbar navbar-expand bg-dark px-3'>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    <div class='d-inline-flex'>
+        <a class='navbar-brand d-flex opacity-100 align-items-center' href='{% url "dashboard" %}'>
+            <!-- <img src="{% static 'images/logo.png' %}" width='auto' height='50'> -->
+            <p class="text-light display-5 p-0 m-0">C868 Inventory Manager</p>
+        </a>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <div class="navbar-nav fs-3">
+            {% if request.user.is_staff %}
+                <a class="nav-link text-light" href="/admin">Add Article</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
