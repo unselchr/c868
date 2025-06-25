@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.forms import ValidationError
 from .validators import validateMaxMin, validateInventory
 
 class Role(models.Model):
@@ -36,14 +37,32 @@ class Part(models.Model):
 
     name = models.CharField(max_length=64)
     sku = models.CharField(max_length=64)
-    sub_parts = models.ManyToManyField('self')
+    sub_parts = models.ManyToManyField('self', blank=True)
     source = models.CharField(
         max_length=(15),
         choices=SOURCE_CHOICES,
         default=IN_HOUSE,
     )
     source_id = models.CharField(max_length=64)
-    inventory_level = models.IntegerField(validators=[validateInventory])
+    inventory = models.IntegerField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
-    max_inventory = models.IntegerField(validators=[MinValueValidator(1, 'Must be greater than 0.'), validateMaxMin])
+    max_inventory = models.IntegerField(validators=[MinValueValidator(1, 'Must be greater than 0.')])
     min_invetory = models.IntegerField(validators=[MinValueValidator(0, 'Must be greater than or equal to 0.')])
+
+    def validateMaxMin(self):
+        if self.max_inventory <= self.min_invetory:
+            raise ValidationError('Max value is less than or equal to min value.')
+    
+    def validateInventory(self):
+        if self.inventory > self.max_inventory:
+            raise ValidationError('Inventory must be less than max.')
+        if self.inventory < self.min_invetory:
+            raise ValidationError('Inventory must be greater than min.')
+    
+    def save(self, *args, **kwargs):
+        self.validateInventory()
+        self.validateMaxMin()
+        return super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.name
