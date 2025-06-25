@@ -10,6 +10,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import PasswordResetView
 from . import forms as forms
+from . import models as models
+from .utils import check_roles
 
 def error_404(request, exception):
     t = loader.get_template('error_404.html')
@@ -37,7 +39,8 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(request, email=user.email, password=raw_password)
             if user is not None:
-                login(request, user)
+                # login(request, user)
+                print('user created')
             else:
                 print("user is not authenticated")
             return redirect('dashboard')
@@ -58,4 +61,16 @@ class PasswordChange(SuccessMessageMixin, PasswordResetView):
 
 class HomeView(LoginRequiredMixin, generic.base.TemplateView):
     template_name = 'dashboard.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        parts = models.Part.objects.filter()
+        context['parts'] = parts
+        return context
 
+@check_roles
+class UserListView(LoginRequiredMixin, generic.ListView):
+    template_name = 'user_management.html'
+    allowed_roles = [models.Role.ADMIN]
+    model = models.CustomUser
+    paginate_by = 20

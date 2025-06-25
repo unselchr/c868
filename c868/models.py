@@ -1,7 +1,27 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.forms import ValidationError
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .validators import validateMaxMin, validateInventory
+from .managers import CustomUserManager
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
+    email = models.EmailField("email address", unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    role = models.ForeignKey('Role', verbose_name='Roles', null=True, related_name='users', on_delete=models.SET_NULL)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.email
 
 class Role(models.Model):
     class Meta:

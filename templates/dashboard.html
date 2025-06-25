@@ -2,7 +2,30 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>test</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">SKU</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Machine ID/Company ID</th>
+                    <th scope="col">Inventory</th>
+                    <th scope="col">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in parts %}
+                    <tr>
+                        <th scope="row">{{p.name}}</th>
+                        <td>{{p.sku}}</td>
+                        <td>{{p.source}}</td>
+                        <td>{{p.source_id}}</td>
+                        <td>{{p.inventory}}</td>
+                        <td>{{p.price}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock content %}
