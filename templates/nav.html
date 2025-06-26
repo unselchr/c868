@@ -23,7 +23,7 @@
         </div>
         <div class="navbar-nav fs-3">
             {% if request.user %}
-                <form method="POST" action="logout/" style="">
+                <form method="POST" action="/logout/" style="">
                     {% csrf_token %}
                     <button class="btn btn-primary" type="submit">Logout</button>
                 </form>

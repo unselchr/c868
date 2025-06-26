@@ -15,8 +15,8 @@ class RoleMiddleware:
                 allowed_roles = cbv.allowed_roles
                 user = request.user
                 if request.user.is_authenticated:
-                    if not user.roles.filter(name__in=allowed_roles):
+                    if not user.role.name in allowed_roles:
                         print(user)
-                        print(user.roles)
+                        print(user.role)
                         print(allowed_roles)
                         raise PermissionDenied()

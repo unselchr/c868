@@ -64,7 +64,7 @@ class PasswordChange(SuccessMessageMixin, PasswordResetView):
     
     template_name = 'password_reset.html'
     email_template_name = 'password_reset_email.html'
-    subject_template_name = 'Reset your password'
+    subject_template_name = 'password_reset_subject.html'
     success_message = "We've emailed you instructions for setting your password, " \
                       "if an account exists with the email you entered. You should receive them shortly." \
                       " If you don't receive an email, " \

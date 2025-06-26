@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'c868.middleware.RoleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -166,11 +167,11 @@ LOGOUT_REDIRECT_URL = "login"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+EMAIL_USE_TLS = True
 EMAIL_HOST = os.environ.get('EMAILHOST')
 EMAIL_PORT = os.environ.get('EMAILPORT')
 EMAIL_HOST_USER = os.environ.get('EMAILHOSTUSER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAILHOSTPASSWORD')
-EMAIL_USE_TLS = True
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login/'
