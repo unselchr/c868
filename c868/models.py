@@ -68,6 +68,7 @@ class Part(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10)
     max_inventory = models.IntegerField(validators=[MinValueValidator(1, 'Must be greater than 0.')])
     min_inventory = models.IntegerField(validators=[MinValueValidator(0, 'Must be greater than or equal to 0.')])
+    last_edit = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.name

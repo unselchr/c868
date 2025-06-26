@@ -74,7 +74,7 @@ class PasswordChange(SuccessMessageMixin, PasswordResetView):
 class HomeView(LoginRequiredMixin, generic.ListView):
     template_name = 'dashboard.html'
     model = models.Part
-    ordering = ['-pk']
+    ordering = ['-last_edit']
     paginate_by = 20
     
     def get_queryset(self):
