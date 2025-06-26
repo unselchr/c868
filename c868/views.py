@@ -8,11 +8,16 @@ from django.template import loader
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import PasswordResetView
 from . import forms as forms
 from . import models as models
 from .utils import check_roles
+
+def logout_view(request):
+    logout(request)
+    # Redirect to a desired page after logout, e.g., the login page
+    return redirect('login/') 
 
 def error_404(request, exception):
     t = loader.get_template('error_404.html')
