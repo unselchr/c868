@@ -3,10 +3,7 @@
 <div class="row">
     <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
         <div class="btn-group me-2" role="group" aria-label="First group">
-            <button type="button" class="btn btn-primary">1</button>
-            <button type="button" class="btn btn-primary">2</button>
-            <button type="button" class="btn btn-primary">3</button>
-            <button type="button" class="btn btn-primary">4</button>
+            <a type="button" class="btn btn-primary" href="{% url 'partcreate' %}">Add New Part</a>
         </div>
         <div class="btn-group me-2" role="group" aria-label="Second group">
             <button type="button" class="btn btn-secondary">5</button>
@@ -29,6 +26,8 @@
                     <th scope="col">Machine ID/Company ID</th>
                     <th scope="col">Inventory</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Sub-Parts</th>
+                    <th scope="col">Parent</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +39,8 @@
                         <td>{{p.source_id}}</td>
                         <td>{{p.inventory}}</td>
                         <td>{{p.price}}</td>
+                        <td>{{p.sub_parts.count}}</td>
+                        <td>{% if p.parent_part.count %}<a href="{% url 'partdetail' p.parent_part.first.pk %}">{{p.parent_part.first.name}}</a>{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>

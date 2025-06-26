@@ -57,7 +57,7 @@ class Part(models.Model):
 
     name = models.CharField(max_length=64)
     sku = models.CharField(max_length=64)
-    sub_parts = models.ManyToManyField('self', blank=True)
+    sub_parts = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='parent_part')
     source = models.CharField(
         max_length=(15),
         choices=SOURCE_CHOICES,
@@ -68,21 +68,6 @@ class Part(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10)
     max_inventory = models.IntegerField(validators=[MinValueValidator(1, 'Must be greater than 0.')])
     min_inventory = models.IntegerField(validators=[MinValueValidator(0, 'Must be greater than or equal to 0.')])
-
-    def validateMaxMin(self):
-        if self.max_inventory <= self.min_inventory:
-            raise ValidationError('Max value is less than or equal to min value.')
-    
-    def validateInventory(self):
-        if self.inventory > self.max_inventory:
-            raise ValidationError('Inventory must be less than max.')
-        if self.inventory < self.min_inventory:
-            raise ValidationError('Inventory must be greater than min.')
-    
-    def save(self, *args, **kwargs):
-        self.validateInventory()
-        self.validateMaxMin()
-        return super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name

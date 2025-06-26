@@ -3,10 +3,33 @@
 <div class="row">
     <div class="col-12 justify-content-center d-flex">
         <form method="post">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit" class="btn btn-secondary">Submit</button>
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-secondary">Submit</button>
         </form>
+    </div>
+    <div class="col-12 text-center">
+        {% if object.sub_parts.all %}
+            <p>Cannot delete a part that has sub-parts. Delete sub-parts first.</p>
+            <a href="{% url 'partdelete' object.pk %}" class="btn btn-danger disabled">Delete Part</a>
+        {% else %}
+            <a href="{% url 'partdelete' object.pk %}" class="btn btn-danger">Delete Part</a>
+        {% endif %}
+    </div>
+    <div class="col-12 justify-content-center d-flex">
+        <h3>Sub-Parts</h3>
+    </div>
+    <div class="col-12 justify-content-center d-flex">
+        <ul class="list-group">
+            {% for p in object.sub_parts.all %}
+                <li class="list-group-item">
+                    <a href="{% url 'partdetail' p.pk %}">{{p.name}}</a>
+                </li>
+            {% endfor %}
+            <li class="list-group-item">
+                <a href="{% url 'partcreatesubpart' object.pk %}">New Sub-Part</a>
+            </li>
+        </ul>
     </div>
 </div>
 {% endblock content %}

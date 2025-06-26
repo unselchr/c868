@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
-from django.http.response import HttpResponseServerError, HttpResponseNotFound, HttpResponseForbidden
+from django.http.response import HttpResponseServerError, HttpResponseNotFound, HttpResponseForbidden, HttpResponseBadRequest
+from django.core.exceptions import BadRequest
 from django.template import loader
 # from users.utils import check_roles
 # from users.models import Role
@@ -29,6 +30,12 @@ def error_403(request, exception):
     t = loader.get_template('error_403.html')
     response = HttpResponseForbidden(t.render())
     response.status_code = 403
+    return response
+
+def error_400(request, exception):
+    t = loader.get_template('error_400.html')
+    response = HttpResponseBadRequest(t.render({'message': exception.message}))
+    response.status_code = 400
     return response
 
 def signup(request):
@@ -69,6 +76,8 @@ class HomeView(LoginRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
         # parts = models.Part.objects.filter()
         # context['parts'] = parts
+        # for p in parts:
+        #     print(p)
         return context
 
 @check_roles
@@ -76,16 +85,7 @@ class PartDetailView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'part_detail.html'
     allowed_roles = [models.Role.ADMIN, models.Role.USER]
     model = models.Part
-    fields = [
-        'name',
-        'sku',
-        'source',
-        'source_id',
-        'inventory',
-        'price',
-        'max_inventory',
-        'min_inventory',
-    ]
+    form_class = forms.EditPartForm
     success_url = reverse_lazy('dashboard')
 
 @check_roles
@@ -93,6 +93,37 @@ class PartCreateView(LoginRequiredMixin, generic.FormView):
     template_name = 'part_create.html'
     allowed_roles = [models.Role.ADMIN, models.Role.USER]
     success_url = reverse_lazy('dashboard')
+    def get_form_class(self):
+        if self.kwargs.get('parent_pk'):
+            return forms.CreateSubPartForm
+        return forms.CreatePartForm
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.kwargs.get('parent_pk'):
+            kwargs['parent_pk'] = self.kwargs['parent_pk']
+        return kwargs
+    def form_valid(self, form):
+        newpart = form.save()
+        parent_pk = form.cleaned_data.get('parent_pk')
+        if parent_pk:
+            parent = models.Part.objects.get(pk=parent_pk)
+            parent.sub_parts.add(newpart)
+            parent.save()
+        return super().form_valid(form)
+
+@check_roles
+class PartDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    allowed_roles = [models.Role.ADMIN, models.Role.USER]
+    success_url = reverse_lazy('dashboard')
+    model = models.Part
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        part = models.Part.objects.get(pk=pk)
+        if part.sub_parts.exists():
+            raise BadRequest('Cannot delete a part that has sub-parts. You must delete sub-parts first.')
+        return super().delete(request, *args, **kwargs)
 
 @check_roles
 class UserListView(LoginRequiredMixin, generic.ListView):

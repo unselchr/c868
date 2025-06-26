@@ -26,7 +26,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.HomeView.as_view(), name='dashboard'),
 	path('part/<int:pk>/edit/', views.PartDetailView.as_view(), name='partdetail'),
+	path('part/<int:pk>/delete/', views.PartDeleteView.as_view(), name='partdelete'),
 	path('part/create/', views.PartCreateView.as_view(), name='partcreate'),
+	path('part/create/<int:parent_pk>/', views.PartCreateView.as_view(), name='partcreatesubpart'),
 	path('users/', views.UserListView.as_view(), name='userlist'),
 	path('users/<int:pk>/edit/', views.UserDetailView.as_view(), name='userdetail'),
 	path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='userdelete'),
@@ -44,3 +46,4 @@ if settings.DEBUG:
 handler404 = views.error_404
 handler500 = views.error_500
 handler403 = views.error_403
+handler400 = views.error_400
