@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12 justify-content-center d-flex">
+        <form method="post">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" class="btn btn-secondary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

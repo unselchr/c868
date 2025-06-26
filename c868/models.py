@@ -67,16 +67,16 @@ class Part(models.Model):
     inventory = models.IntegerField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
     max_inventory = models.IntegerField(validators=[MinValueValidator(1, 'Must be greater than 0.')])
-    min_invetory = models.IntegerField(validators=[MinValueValidator(0, 'Must be greater than or equal to 0.')])
+    min_inventory = models.IntegerField(validators=[MinValueValidator(0, 'Must be greater than or equal to 0.')])
 
     def validateMaxMin(self):
-        if self.max_inventory <= self.min_invetory:
+        if self.max_inventory <= self.min_inventory:
             raise ValidationError('Max value is less than or equal to min value.')
     
     def validateInventory(self):
         if self.inventory > self.max_inventory:
             raise ValidationError('Inventory must be less than max.')
-        if self.inventory < self.min_invetory:
+        if self.inventory < self.min_inventory:
             raise ValidationError('Inventory must be greater than min.')
     
     def save(self, *args, **kwargs):

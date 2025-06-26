@@ -33,7 +33,7 @@ def error_403(request, exception):
 
 def signup(request):
     if request.method == 'POST':
-        form = forms.UserCreationForm(request.POST)
+        form = forms.CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             raw_password = form.cleaned_data.get('password1')
@@ -43,9 +43,9 @@ def signup(request):
                 print('user created')
             else:
                 print("user is not authenticated")
-            return redirect('dashboard')
+            return redirect('userlist')
     else:
-        form = forms.UserCreationForm()
+        form = forms.CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
 class PasswordChange(SuccessMessageMixin, PasswordResetView):
@@ -59,18 +59,61 @@ class PasswordChange(SuccessMessageMixin, PasswordResetView):
                       "please make sure you've entered the address you registered with, and check your spam folder."
     success_url = reverse_lazy('dashboard')
 
-class HomeView(LoginRequiredMixin, generic.base.TemplateView):
+class HomeView(LoginRequiredMixin, generic.ListView):
     template_name = 'dashboard.html'
+    model = models.Part
+    ordering = ['-pk']
+    paginate_by = 20
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        parts = models.Part.objects.filter()
-        context['parts'] = parts
+        # parts = models.Part.objects.filter()
+        # context['parts'] = parts
         return context
 
 @check_roles
+class PartDetailView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'part_detail.html'
+    allowed_roles = [models.Role.ADMIN, models.Role.USER]
+    model = models.Part
+    fields = [
+        'name',
+        'sku',
+        'source',
+        'source_id',
+        'inventory',
+        'price',
+        'max_inventory',
+        'min_inventory',
+    ]
+    success_url = reverse_lazy('dashboard')
+
+@check_roles
+class PartCreateView(LoginRequiredMixin, generic.FormView):
+    template_name = 'part_create.html'
+    allowed_roles = [models.Role.ADMIN, models.Role.USER]
+    success_url = reverse_lazy('dashboard')
+
+@check_roles
 class UserListView(LoginRequiredMixin, generic.ListView):
-    template_name = 'user_management.html'
+    template_name = 'userlist.html'
     allowed_roles = [models.Role.ADMIN]
     model = models.CustomUser
+    ordering = ['-pk']
     paginate_by = 20
+
+@check_roles
+class UserDetailView(LoginRequiredMixin, generic.edit.UpdateView):
+    template_name = 'basic_form.html'
+    allowed_roles = [models.Role.ADMIN]
+    model = models.CustomUser
+    fields = ['role']
+    success_url = reverse_lazy('userlist')
+
+@check_roles
+class UserDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    allowed_roles = [models.Role.ADMIN]
+    model = models.CustomUser
+    success_url = reverse_lazy('userlist')
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
