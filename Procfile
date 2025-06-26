@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: gunicorn djangotemplate.wsgi
+web: gunicorn c868.wsgi
