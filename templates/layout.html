@@ -8,13 +8,13 @@
         <meta name="description" content="{% block meta_description %}{% endblock %}">
         <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         {% block extraheader %}{% endblock extraheader %}
     </head>
 
-    <body>
+    <body style="max-width: 100vw; overflow-x:hidden;">
         {% block layout %}
-            <div class='container-fluid min-vh-100 gx-0'>
+            <div class='container-fluid min-vh-100 gx-0' style="max-width: 100vw; overflow-x:hidden;">
                 {% block nav %}
                     {% include 'nav.html' %}
                 {% endblock nav %}
@@ -40,6 +40,11 @@
             </div>
         {% endblock layout %}
         {% block extrascripts %}{% endblock extrascripts %}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+        <script>
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        </script>
     </body>
 </html>

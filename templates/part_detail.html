@@ -1,6 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="row">
+    {% if object.parent_part.exists %}
+        <div class="col-12 justify-content-center d-flex">
+            <h3>This part is a sub-part of <a href="{% url 'partdetail' object.parent_part.first.pk %}">{{object.parent_part.first.name}}</a></h3>
+        </div>
+    {% endif %}
     <div class="col-12 justify-content-center d-flex">
         <form method="post">
             {% csrf_token %}

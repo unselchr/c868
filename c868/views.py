@@ -1,11 +1,11 @@
+import re
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http.response import HttpResponseServerError, HttpResponseNotFound, HttpResponseForbidden, HttpResponseBadRequest
 from django.core.exceptions import BadRequest
 from django.template import loader
-# from users.utils import check_roles
-# from users.models import Role
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import login, authenticate
@@ -72,12 +72,41 @@ class HomeView(LoginRequiredMixin, generic.ListView):
     ordering = ['-pk']
     paginate_by = 20
     
+    def get_queryset(self):
+        parts = super().get_queryset()
+        source = self.request.GET.get('source')
+        if source:
+            parts = parts.filter(source=source)
+        search = self.request.GET.get('search')
+        if search:
+            search = search.lower()
+            parts = parts.filter(
+                Q(name__icontains=search)|
+                Q(sku__icontains=search)|
+                Q(source_id__icontains=search)|
+                Q(price__icontains=search))
+        return parts
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # parts = models.Part.objects.filter()
-        # context['parts'] = parts
-        # for p in parts:
-        #     print(p)
+        context['source_choices'] = models.Part.SOURCE_CHOICES
+        params = []
+
+        source = self.request.GET.get('source')
+        if source:
+            params.append('source=%s'%source)
+            context['source']=source
+        
+        search = self.request.GET.get('search')
+        if search:
+            params.append('search=%s'%search)
+            context['search']=search
+        
+        qs = '&'.join(params)
+        
+        context['source_qs'] = re.sub(r'source=[A-Z]+&?', '', qs)
+        context['search_qs'] = re.sub(r'search=[^&]+&?', '', qs)
+       
         return context
 
 @check_roles

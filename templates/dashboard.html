@@ -5,18 +5,25 @@
         <div class="btn-group me-2" role="group" aria-label="First group">
             <a type="button" class="btn btn-primary" href="{% url 'partcreate' %}">Add New Part</a>
         </div>
-        <div class="btn-group me-2" role="group" aria-label="Second group">
-            <button type="button" class="btn btn-secondary">5</button>
-            <button type="button" class="btn btn-secondary">6</button>
-            <button type="button" class="btn btn-secondary">7</button>
+        <div class="btn-group me-2" role="group">
+            <button id="sourceDropdown" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if source %}{{source}}{% else %}Source{% endif %}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sourceDropdown">
+                {% for i, j in source_choices %}
+                    <li><a class="dropdown-item" href="{% url 'dashboard' %}?{{source_qs}}&source={{i}}">{{j}}</a></li>
+                {% endfor %}
+                <li><a class="dropdown-item" href="{% url 'dashboard' %}?{{source_qs}}">All</a></li>
+            </ul>
         </div>
-        <div class="input-group">
+        <div class="input-group me-2">
             <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="searchButton">
+            <input type="text" class="form-control" placeholder="{% if search %}{{search}}{% else %}Search{% endif %}" aria-label="Search" aria-describedby="searchButton" id="searchField" data-bs-toggle="tooltip" data-bs-placement="bottom" title="You can search by part name, sku, source id, or price. Search is case insensitive.">
+            <button class="btn btn-outline-secondary" type="button" id="searchClearButton">X</button>
         </div>
   </div>
     </div>
-    <div class="col-12">
+    <div class="col-12" style="max-width: 100vw; overflow-x:scroll;">
         <table class="table">
             <thead>
                 <tr>
@@ -65,3 +72,16 @@
     </div>
 </div>
 {% endblock content %}
+{% block extrascripts %}
+<script>
+var searchButton = document.getElementById('searchButton');
+var searchClearButton = document.getElementById('searchClearButton');
+var searchField = document.getElementById('searchField');
+searchButton.addEventListener('click', function(){
+    window.location = window.location.href.split('?')[0] + '?' + '{{search_qs}}' + '&search=' + searchField.value;
+});
+searchClearButton.addEventListener('click', function(){
+    window.location = window.location.href.split('?')[0] + '?' + '{{search_qs}}';
+});
+</script>
+{% endblock extrascripts %}
