@@ -167,11 +167,17 @@ LOGOUT_REDIRECT_URL = "login"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = os.environ.get('EMAILHOST')
-EMAIL_PORT = os.environ.get('EMAILPORT')
-EMAIL_HOST_USER = os.environ.get('EMAILHOSTUSER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAILHOSTPASSWORD')
+# EMAIL_USE_SSL = True
+# EMAIL_HOST = os.environ.get('EMAILHOST')
+# EMAIL_PORT = os.environ.get('EMAILPORT')
+# EMAIL_HOST_USER = os.environ.get('EMAILHOSTUSER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAILHOSTPASSWORD')
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.environ.get('MAILGUNKEY'),
+    "MAILGUN_SENDER_DOMAIN": 'mail.adaptfultech.com',
+}
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+DEFAULT_FROM_EMAIL = "postmaster@mail.adaptfultech.com"
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login/'
