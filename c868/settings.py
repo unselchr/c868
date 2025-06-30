@@ -22,6 +22,8 @@ if STAGE == 'dev' or STAGE == 'test':
     load_dotenv()
     if STAGE == 'dev':
         DEBUG = True
+if STAGE == 'dev-prod':
+    DEBUG = True
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
