@@ -17,7 +17,7 @@ from .utils import check_roles
 def logout_view(request):
     logout(request)
     # Redirect to a desired page after logout, e.g., the login page
-    return redirect('login/') 
+    return redirect('/login/') 
 
 def error_404(request, exception):
     t = loader.get_template('error_404.html')
