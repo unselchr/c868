@@ -141,6 +141,7 @@ INTERNAL_IPS = [
     "localhost",
     "127.0.0.1",
 ]
+DEBUG_PROPAGATE_EXCEPTIONS=True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
