@@ -69,6 +69,8 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 ROOT_URLCONF = 'c868.urls'
 
 TEMPLATES = [
