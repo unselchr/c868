@@ -46,6 +46,6 @@ if settings.DEBUG:
 	urlpatterns.append(path(r'__debug__/', include(debug_toolbar.urls)))
 
 handler404 = views.error_404
-handler500 = views.error_500
+# handler500 = views.error_500
 handler403 = views.error_403
 handler400 = views.error_400

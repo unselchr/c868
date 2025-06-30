@@ -17,11 +17,11 @@ import dj_database_url
 
 STAGE = os.environ.get('STAGE', 'dev')
 DEBUG = False
-if STAGE == 'dev':
+if STAGE == 'dev' or STAGE == 'test':
     from dotenv import load_dotenv
     load_dotenv()
-
-    DEBUG = True
+    if STAGE == 'dev':
+        DEBUG = True
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -143,7 +143,7 @@ INTERNAL_IPS = [
     "localhost",
     "127.0.0.1",
 ]
-DEBUG_PROPAGATE_EXCEPTIONS=True
+# DEBUG_PROPAGATE_EXCEPTIONS=True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
