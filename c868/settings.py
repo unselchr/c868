@@ -99,7 +99,7 @@ WSGI_APPLICATION = 'c868.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-if STAGE == 'dev':
+if STAGE == 'dev' or STAGE == 'test':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
